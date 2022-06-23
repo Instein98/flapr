@@ -2,7 +2,6 @@ import os
 import shutil
 import random
 import subprocess as sp
-from sys import stderr, stdout
 
 
 # v1.2.0: Closure 1-133, v2.0.0: Closure 1-176
@@ -20,16 +19,16 @@ d4jMvnProjDir = '/home/yicheng/research/apr/d4jMvnForUniapr/d4jMvnProj/'
 patchesDir = '/home/yicheng/research/apr/experiments/tbar/patches/'
 outputDir = os.path.abspath('validationResult')
 
-def validateAll(patchesDir:str, d4jMvnProjDir:str, outputDir:str):
+def validateAll(patchesDir:str, d4jMvnProjDir:str, outputDir:str, restartJVM=False):
     for pid in projDict.keys():
         bidList, depList = projDict[pid]
         for bid in bidList:
             if bid in depList:
                 continue
             doValidate(pid, bid, os.path.join(patchesDir, '{}_{}'.format(pid, bid), 'patches-pool'), 
-                            os.path.join(d4jMvnProjDir, pid, str(bid)), os.path.abspath(outputDir), restartJVM=False)
+                            os.path.join(d4jMvnProjDir, pid, str(bid)), os.path.abspath(outputDir), restartJVM=restartJVM)
 
-def validateSample(patchesDir:str, d4jMvnProjDir:str, outputDir:str, k:int):  # randomly do patches validation for k projects of each pid
+def validateSample(patchesDir:str, d4jMvnProjDir:str, outputDir:str, k:int, restartJVM=False):  # randomly do patches validation for k projects of each pid
     for pid in projDict.keys():
         bidList, depList = projDict[pid]
         for depId in depList:
@@ -37,14 +36,16 @@ def validateSample(patchesDir:str, d4jMvnProjDir:str, outputDir:str, k:int):  # 
         selectedPidList = random.sample(bidList, k)
         for bid in selectedPidList:
             doValidate(pid, bid, os.path.join(patchesDir, '{}_{}'.format(pid, bid), 'patches-pool'), 
-                            os.path.join(d4jMvnProjDir, pid, str(bid)), os.path.abspath(outputDir), restartJVM=False)
+                            os.path.join(d4jMvnProjDir, pid, str(bid)), os.path.abspath(outputDir), restartJVM=restartJVM)
 
 def doValidate(pid:str, bid:int, patchesPoolPath:str, projPath:str, outputDir:str, restartJVM=False):
     print('\n')
     outputLogAbsPath = os.path.join(os.path.abspath(outputDir), '{}-{}.validation.log'.format(pid, bid))
     if os.path.isfile(outputLogAbsPath):
-        print("{}-{} has been already validated, skipping".format(pid, bid))
-        return
+        with open(outputLogAbsPath) as log:
+            if "BUILD SUCCESS" in log.read():
+                print("{}-{} has been already validated, skipping".format(pid, bid))
+                return
     print("================ Validating {}-{} ================".format(pid, bid))
     if not os.path.isdir(os.path.join(projPath, 'patches-pool')):
         shutil.copytree(patchesPoolPath, os.path.join(projPath, 'patches-pool'))
@@ -61,6 +62,8 @@ def doValidate(pid:str, bid:int, patchesPoolPath:str, projPath:str, outputDir:st
         print(stdout)
         print(stderr)
 
+
 if __name__ == '__main__':
+    validateAll(patchesDir, d4jMvnProjDir, outputDir, restartJVM=True)
     validateSample(patchesDir, d4jMvnProjDir, outputDir, 3)
     # print(outputDir)
