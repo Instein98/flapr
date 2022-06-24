@@ -5,7 +5,8 @@ This script is to collect `totalfailed`, `totalpassed`, `failed(s)`, and `passed
 import os
 import subprocess as sp
 
-d4jProjCoverageDir = 'xxx'
+d4jMvnProjDir = '/home/yicheng/apr/d4jMvnForUniapr/d4jMvnProj/'
+d4jProjCoverageDir = '/home/yicheng/apr/flapr/Coverage/Defects4j/'
 allTestsFilesDir = '/home/yicheng/apr/d4jMvnForUniapr/all_tests_files/'
 
 # format: fullyQualifiedClassName::testName
@@ -46,12 +47,57 @@ def getSetOfPassingFailingTests(pid, bid):
     assert len(passingTestsSet) == len(allTestsSet) - len(failingTestsSet)
     return passingTestsSet, failingTestsSet
     
-def processCoverageFile(covFilePath: str):
+def getTestSourceDirPath(pid: str, bid: int):
+    projPath = os.path.join(d4jMvnProjDir, pid, str(bid))
+    testDir = sp.check_output("defects4j export -p dir.src.tests", shell=True, universal_newlines=True, cwd=projPath)
+    return os.path.join(projPath, testDir)
+
+def isTestClass(testSourcePath, dotClassName):
+    slashClassName = dotClassName.replace('.', '/')
+    if os.path.exists("{}/{}.java".format(testSourcePath, slashClassName)):
+        return True
+    else:
+        return False
+
+def processCoverageFile(pid: str, bid: int, covFilePath: str, passingTestSet: set, failingTestSet: set):
     # format: { codeElement: [passed(s), failed(s)] }
     resDict = {}
+    projTestSourceDir = getTestSourceDirPath(pid, bid)
     with open(covFilePath, 'r') as file:
         for line in file:
-            pass
+            tmp = line.strip().split()
+            curTest = tmp[0]
+            curTest = curTest[:curTest.index('(')]
+            curTest = curTest[:curTest.rindex('.')] + '::' + curTest[curTest.rindex('.')+1:]
+            passing = True
+            # if this test can't be found 
+            if curTest not in passingTestSet and curTest not in failingTestSet:
+                continue
+            elif curTest in failingTestSet:
+                passing = False
+            codeElements = tmp[1:]
+            for element in codeElements:
+                eleClassName = element[:element.index(':')]
+                # code elements in test classes should not be considered
+                if isTestClass(projTestSourceDir, eleClassName):
+                    continue
+                if element not in resDict.keys():
+                    resDict[element] = [0, 0]
+                if passing == True:
+                    resDict[element][0] += 1
+                else:
+                    resDict[element][1] += 1
+    return resDict
+
+def outputCodeElements(outputFilePath: str, elementDict: dict, totalPassedNum: int, totalFailedNum: int):
+    res = 'CodeElement, passed(s), failed(s), totalpassed, totalfailed'
+    for element in elementDict.keys():
+        res += '{}, {}, {}, {}, {}\n'.format(element, elementDict[element][0], elementDict[element][1], totalPassedNum, totalFailedNum)
+    with open(outputFilePath, 'w') as file:
+        file.write(res)
 
 if __name__ == '__main__':
-    getSetOfPassingFailingTests('Chart', 4)
+    passingTestSet, failingTestSet = getSetOfPassingFailingTests('Chart', 4)
+    resDict = processCoverageFile('Chart', 4, '/home/yicheng/apr/flapr/Coverage/Defects4j/Chart/4.txt', passingTestSet, failingTestSet)
+    # print(resDict)
+    outputCodeElements('tmp', resDict, len(passingTestSet), len(failingTestSet),)
