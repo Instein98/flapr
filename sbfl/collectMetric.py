@@ -91,7 +91,7 @@ def processCoverageFile(pid: str, bid: int, covFilePath: str, passingTestSet: se
                     else:
                         resDict[element][1].add(curTest)
             except:
-                print('[ERROR] Having troubles handling the line: {} in coverage file {}'.format(line, covFilePath))
+                print('[ERROR] Have trouble handling the following line in coverage file {}:\n{}'.format(covFilePath, line))
                 traceback.print_exc()
                 continue
     return resDict
@@ -128,6 +128,10 @@ def main():
             outputPath = os.path.join(outputDir, pid, '{}.csv'.format(bid))
             if os.path.isfile(outputPath):
                 print("{} already exists, skipping...".format(outputPath))
+                continue
+            allTestsFilePath = os.path.join(allTestsFilesDir, pid, str(bid), 'all_tests')
+            if not os.path.isfile(allTestsFilePath):
+                print('[WARNING] all_tests file not found: {}. Is {}-{} deprecated?'.format(allTestsFilePath, pid, bid))
                 continue
 
             # Start analysis
