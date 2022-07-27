@@ -11,8 +11,9 @@ tbarPatchesDir = '/home/yicheng/research/apr/experiments/tbar/patches.bak0726/'
 
 def readPatchInfoFile():
     """
-    The modified tbar will generate a json patches.info file when generating uniapr style patches. This function will read the json file and get the data of stmt location, patches list, stmt process time.
+    The modified tbar will generate a json patches.info file when generating uniapr style patches. This function will read the json file and get the data of stmt location, patches list, stmt process time. The structure of the result: {bugId: {stmtLocation: {key values}}}
     """
+    res = {}
     for bugId in os.listdir(tbarPatchesDir):
         if '_' not in bugId:
             continue
@@ -20,13 +21,40 @@ def readPatchInfoFile():
         pid = tmp[0]
         bid = tmp[1]
         print(bugId)
-        patchesInfoFile = os.path.join(tbarPatchesDir, bugId, 'patches-pool', 'patches.info')
-        with open(patchesInfoFile, 'r') as file:
-            patchesInfo = json.load(file)
-            patchesInfo = parseStmtInfo(patchesInfo)
-            break
+
+        stmtInfoDict = {}
+        patchesPoolDir = os.path.join(tbarPatchesDir, bugId, 'patches-pool')
+        for patchPoolId in os.listdir(patchesPoolDir):
+            patchDir = os.path.join(patchesPoolDir, patchPoolId)
+            patchInfoFile = os.path.join(patchDir, 'patchInfo.txt')
+            if not os.path.isfile(patchInfoFile):
+                continue
+            stmtInfoDict = readPatchInfo(stmtInfoDict, patchPoolId, patchInfoFile)
+        res[bugId] = stmtInfoDict
+        # patchesInfoFile = os.path.join(tbarPatchesDir, bugId, 'patches-pool', 'patches.info')
+        # with open(patchesInfoFile, 'r') as file:
+        #     patchesInfo = json.load(file)
+        #     patchesInfo = parseStmtInfo(patchesInfo)
+        #     res[bugId] = patchesInfo
+    return res
+
+def readPatchInfo(stmtInfoDict: dict, patchPoolId: str, infoFile: str):
+    patchPoolId = int(patchPoolId)
+    with open(infoFile, 'r') as file:
+        for line in file:
+            if line.startswith('stmtLocation: '):
+                location = line.strip()[len('stmtLocation: '):]
+            elif line.startswith('compilationTimeMs: '):
+                compileTime = int(line.strip()[len('compilationTimeMs: '):])
+    if location not in stmtInfoDict:
+        stmtInfoDict[location] = {'patches': [patchPoolId], 'generationTime': compileTime}
+    else:
+        stmtInfoDict[location]['patches'].append(patchPoolId)
+        stmtInfoDict[location]['generationTime'] = stmtInfoDict[location]['generationTime'] + compileTime
+    return stmtInfoDict
 
 def parseStmtInfo(patchesInfo):
+    stmtInfoDict = {}
     for stmtDict in patchesInfo:
         location = stmtDict['stmtLocation']
         parseTime = getDictIntValue(stmtDict, 'parseSuspCodeNodeTimeMs')
@@ -41,12 +69,9 @@ def parseStmtInfo(patchesInfo):
                 if 'compilable' not in patchDict or patchDict['compilable'] == False:
                     cantCompilePatchesNum += 1
                 totalPatchCompilationTime += patchDict['compilationTimeMs']
-        
         stmtProcessTime = parseTime + genTime + totalPatchCompilationTime
-        # print(location)
-        # print(compilablePatches)
-        # print(cantCompilePatchesNum)
-        # print(totalPatchCompilationTime)
+        stmtInfoDict[location] = {'patches': compilablePatches, 'generationTime': stmtProcessTime}
+    return stmtInfoDict
 
 def getDictIntValue(dic, key):
     return dic[key] if key in dic else 0
