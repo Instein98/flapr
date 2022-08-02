@@ -34,8 +34,13 @@ def Kulczynski2(passS: int, failS: int, totalPass: int, totalFail: int):
 
 def M1(passS: int, failS: int, totalPass: int, totalFail: int):
     numerator = failS + (totalPass - passS)
-    demoninator = (totalFail - failS) + passS
-    return numerator / demoninator
+    denominator = (totalFail - failS) + passS
+    if numerator == 0:
+        return 0
+    elif denominator == 0:
+        return float('inf')
+    else:
+        return numerator / denominator
 
 def Goodman(passS: int, failS: int, totalPass: int, totalFail: int):
     numerator = 2*failS - (totalFail - failS) - passS
@@ -45,10 +50,17 @@ def Goodman(passS: int, failS: int, totalPass: int, totalFail: int):
 def Overlap(passS: int, failS: int, totalPass: int, totalFail: int):
     numerator = failS
     denominator = min(failS, passS, (totalFail - failS))
-    return numerator / denominator
+    if numerator == 0:
+        return 0
+    elif denominator == 0:
+        return float('inf')
+    else:
+        return numerator / denominator
 
 def Zoltar(passS: int, failS: int, totalPass: int, totalFail: int):
     numerator = failS
+    if numerator == 0:
+        return 0
     denominator = totalFail + passS + (10000*(totalFail-failS)*passS) / failS
     return numerator / denominator
 
@@ -64,7 +76,12 @@ def GP13(passS: int, failS: int, totalPass: int, totalFail: int):
 def Dstar2(passS: int, failS: int, totalPass: int, totalFail: int):
     numerator = failS ** 2
     denominator = passS + (totalFail - failS)
-    return numerator / denominator
+    if numerator == 0:
+        return 0
+    elif denominator == 0:
+        return float('inf')
+    else:
+        return numerator / denominator
 
 def ER1a(passS: int, failS: int, totalPass: int, totalFail: int):
     if failS < totalFail:
@@ -126,7 +143,14 @@ def Hamann(passS: int, failS: int, totalPass: int, totalFail: int):
     return numerator / (totalFail + totalPass)
 
 def Kulczynski1(passS: int, failS: int, totalPass: int, totalFail: int):
-    return failS / ((totalFail - failS) + passS)
+    numerator = failS 
+    denominator = ((totalFail - failS) + passS)
+    if numerator == 0:
+        return 0
+    elif denominator == 0:
+        return float('inf')
+    else:
+        return numerator / denominator
 
 def Sokal(passS: int, failS: int, totalPass: int, totalFail: int):
     numerator = 2 * (failS) + 2 * (totalPass - passS)
@@ -146,7 +170,12 @@ def Ochiai2(passS: int, failS: int, totalPass: int, totalFail: int):
     fail_ = totalFail - failS
     numerator = failS * pass_
     denominator = math.sqrt((failS + passS) * (fail_ + pass_) * (failS + pass_) * (fail_ + passS))
-    return numerator / denominator
+    if numerator == 0:
+        return 0
+    elif denominator == 0:
+        return float('inf')
+    else:
+        return numerator / denominator
 
 def Wong2(passS: int, failS: int, totalPass: int, totalFail: int):
     return failS - passS
@@ -176,6 +205,8 @@ def produceSusList(sbfl, exeCsvFile: str, outputFilePath: str):
             if firstLine:
                 firstLine = False
                 continue
+            if line.startswith('edu.washington.cs.mut.testrunner.Formatter'):
+                continue
             # CodeElement, passed(s), failed(s), totalpassed, totalfailed
             tmp = line.strip().split(', ')
             element = tmp[0]
@@ -183,7 +214,13 @@ def produceSusList(sbfl, exeCsvFile: str, outputFilePath: str):
             failS = int(tmp[2])
             totalPass = int(tmp[3])
             totalFail = int(tmp[4])
-            score = sbfl(passS, failS, totalPass, totalFail)
+            try:
+                score = sbfl(passS, failS, totalPass, totalFail)
+            except:
+                print('[ERROR] {} failed for {} in {}'.format(sbfl.__name__, line.strip(), exeCsvFile))
+                import traceback
+                traceback.print_exc()
+                exit(1)
             elementScoreList.append((element, score))
     elementScoreList.sort(key=lambda eleAndScore: eleAndScore[1], reverse=True)
 

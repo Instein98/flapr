@@ -7,8 +7,8 @@ import os
 import subprocess as sp
 from pathlib import Path
 
-d4jMvnProjDir = '/home/yicheng/apr/d4jMvnForUniapr/d4jMvnProj/'
-d4jProjCoverageDir = '/home/yicheng/apr/flapr/Coverage/d4jCov'
+d4jMvnProjDir = '/home/yicheng/research/apr/d4jMvnForUniapr/d4jMvnProj'
+d4jProjCoverageDir = '/home/yicheng/research/apr/testCovAgent/d4jCov/covResult'
 outputDir = 'sbflExeInfo'
 
 # format: fullyQualifiedClassName::testName

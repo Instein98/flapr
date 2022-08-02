@@ -18,28 +18,29 @@ projDict = {
 d4jMvnProjDir = '/home/yicheng/research/apr/d4jMvnForUniapr/d4jMvnProj/'
 patchesDir = '/home/yicheng/research/apr/experiments/tbar/patches/'
 outputDir = os.path.abspath('validationResult')
+d4jProjPath = '/home/yicheng/research/apr/d4jProj'
 
-def validateAll(patchesDir:str, d4jMvnProjDir:str, outputDir:str, restartJVM=False):
+def validateAll(restartJVM=False):
     for pid in projDict.keys():
         bidList, depList = projDict[pid]
         for bid in bidList:
             if bid in depList:
                 continue
-            doValidate(pid, bid, os.path.join(patchesDir, '{}_{}'.format(pid, bid), 'patches-pool'), 
-                            os.path.join(d4jMvnProjDir, pid, str(bid)), os.path.abspath(outputDir), restartJVM=restartJVM)
+            doValidate(pid, bid, restartJVM=restartJVM)
 
-def validateSample(patchesDir:str, d4jMvnProjDir:str, outputDir:str, k:int, restartJVM=False):  # randomly do patches validation for k projects of each pid
+def validateSample(k:int, restartJVM=False):  # randomly do patches validation for k projects of each pid
     for pid in projDict.keys():
         bidList, depList = projDict[pid]
         for depId in depList:
             bidList.remove(depId)
         selectedPidList = random.sample(bidList, k)
         for bid in selectedPidList:
-            doValidate(pid, bid, os.path.join(patchesDir, '{}_{}'.format(pid, bid), 'patches-pool'), 
-                            os.path.join(d4jMvnProjDir, pid, str(bid)), os.path.abspath(outputDir), restartJVM=restartJVM)
+            doValidate(pid, bid, restartJVM=restartJVM)
 
-def doValidate(pid:str, bid:int, patchesPoolPath:str, projPath:str, outputDir:str, restartJVM=False):
+def doValidate(pid:str, bid:int, restartJVM=False):
     print('\n')
+    patchesPoolPath = os.path.join(patchesDir, '{}_{}'.format(pid, bid), 'patches-pool')
+    projPath = os.path.join(d4jMvnProjDir, pid, str(bid))
     outputLogAbsPath = os.path.join(os.path.abspath(outputDir), '{}-{}.validation.log'.format(pid, bid))
     if os.path.isfile(outputLogAbsPath):
         with open(outputLogAbsPath) as log:
@@ -48,6 +49,9 @@ def doValidate(pid:str, bid:int, patchesPoolPath:str, projPath:str, outputDir:st
                 return
     print("================ Validating {}-{} ================".format(pid, bid))
     if not os.path.isdir(os.path.join(projPath, 'patches-pool')):
+        if not os.path.isdir(patchesPoolPath):
+            print("{} does not exist!".format(patchesPoolPath))
+            return
         shutil.copytree(patchesPoolPath, os.path.join(projPath, 'patches-pool'))
     if not os.path.isdir(os.path.abspath(outputDir)):
         os.makedirs(os.path.abspath(outputDir), exist_ok=True)
@@ -62,8 +66,27 @@ def doValidate(pid:str, bid:int, patchesPoolPath:str, projPath:str, outputDir:st
         print(stdout)
         print(stderr)
 
+# def doValidateWithD4j(pid:str, bid:int, patchesPoolPath:str, outputDir:str):
+#     projPath = os.path.join(d4jProjPath, pid, bid)
+#     # backup failing tests
+#     failingTestFilePath = os.path.join(projPath, 'failing_tests')
+#     if not os.path.isfile(failingTestFilePath + '.bak'):
+#         shutil.copy(failingTestFilePath, os.path.isfile(failingTestFilePath + '.bak'))
+#     # start patch validation
+#     for idx in os.listdir(patchesPoolPath):
+
 
 if __name__ == '__main__':
-    validateAll(patchesDir, d4jMvnProjDir, outputDir, restartJVM=True)
-    validateSample(patchesDir, d4jMvnProjDir, outputDir, 3)
+    validateAll(restartJVM=True)
+    # validateSample(3)
     # print(outputDir)
+
+    # pid = 'Chart'
+    # bid = 4
+    # doValidate(pid, bid, os.path.join(patchesDir, '{}_{}'.format(pid, bid), 'patches-pool'), 
+    #                         os.path.join(d4jMvnProjDir, pid, str(bid)), os.path.abspath(outputDir), restartJVM=True)
+
+    # pid = 'Chart'
+    # bidList = [7, 8, 9, 11, 18, 20, 24]
+    # for bid in bidList:
+    #     doValidate(pid, bid, restartJVM=True)
