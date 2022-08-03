@@ -20,6 +20,9 @@ def readPatchesTimingInfo(xmlFilePath: str):
         # att['status']
         mutationDotClassName = mutation.findtext('mutatedClass')
         lineNum = mutation.findtext('lineNumber')
+        index = mutation.findtext('index')
+        block = mutation.findtext('block')
+        description = mutation.findtext('description')
         mutator = mutation.findtext('mutator')
         if '.' in mutator:
             mutator = mutator[mutator.rindex('.')+1:]
@@ -28,23 +31,22 @@ def readPatchesTimingInfo(xmlFilePath: str):
         location = mutationDotClassName + ':' + lineNum
         # patchId = location + '@' + mutator
         if location not in stmtInfoDict:
-            stmtInfoDict[location] = {'patches': [], 'plausiblePatches': [], 'correctPatches': [], 'patchValidationTime': {}}
-        stmtInfoDict[location]['patches'].append(mutator)
-        stmtInfoDict[location]['patchValidationTime'][mutator] = validationTime
-        if att['status'] == 'SURVIVED':
-            stmtInfoDict[location]['plausiblePatches'].append(mutator)
+            stmtInfoDict[location] = []  # list of patches
+        stmtInfoDict[location].append(
+            {'mutatedClass': mutationDotClassName, 
+            'lineNumber': lineNum, 'index': index, 
+            'block': block, 'description': description, 
+            'mutator': mutator, 'validationTime': validationTime, 
+            'isPlausible': att['status'] == 'SURVIVED', 
+            'isCorrect': False}
+        )
     return stmtInfoDict
 
 def readPatchCorrectnessInfo(pid: str, bid: str, stmtInfoDict: dict):
-    plausibleDict = {}  # location:  list of mutator
     patchesDir = os.path.join(praprPatchCorrectnessDir, pid, bid)
 
     if not os.path.isdir(patchesDir):
         log('No plausible patches found for {}-{} in correctness data'.format(pid, bid))
-        # Assuming the patch correctness data is more reliable than the timing data, remove the plausible patches found in the timing data
-        for location in stmtInfoDict:
-            for mutator in stmtInfoDict[location]['plausiblePatches']:
-                stmtInfoDict[location]['plausiblePatches'].remove(mutator)
         return stmtInfoDict
 
     log('----- Reading correctness information of {}-{} -----'.format(pid, bid))
@@ -52,7 +54,11 @@ def readPatchCorrectnessInfo(pid: str, bid: str, stmtInfoDict: dict):
         patchDirPath = os.path.join(patchesDir, patchDir)
         if not os.path.isdir(patchDirPath):
             continue
-        isCorrect = False
+        # only use the correct patch information of the correctness data
+        correctFilePath = os.path.join(patchDirPath, 'correct')
+        if not os.path.isfile(correctFilePath):
+            continue
+
         infoFilePath = os.path.join(patchDirPath, 'mutant-info.log')
         assert os.path.isfile(infoFilePath)
         with open(infoFilePath, 'r') as file:
@@ -64,40 +70,30 @@ def readPatchCorrectnessInfo(pid: str, bid: str, stmtInfoDict: dict):
                     dotClassName = slashClassName.replace('/', '.')
                 elif 'Line Number: ' in line:
                     lineNum = line.strip()[len('Line Number: '):]
-        location = dotClassName + ':' + lineNum
-        if location not in plausibleDict:
-            plausibleDict[location] = []
-        plausibleDict[location].append(mutator)
-        correctFilePath = os.path.join(patchDirPath, 'correct')
-        if os.path.isfile(correctFilePath):
-            isCorrect = True
+                elif 'Description: ' in line:
+                    description = line.strip()[len('Description: '):]
 
+        location = dotClassName + ':' + lineNum
         if location not in stmtInfoDict:
             warn('{}-{} data mismatch: location {} not in keys of stmtInfoDict'.format(pid, bid, location))
             inconsistentProj.add('{}-{}'.format(pid, bid))
             continue
         else:
-            mutatorList = stmtInfoDict[location]['patches']
-            plausibleMutatorList = stmtInfoDict[location]['plausiblePatches']
-            if mutator not in mutatorList:
-                warn('{}-{} data mismatch: mutator {} does not exist for location {} in timing data'.format(pid, bid, mutator, location))
+            patchList = stmtInfoDict[location]
+            foundCorrespondingPatch = False
+            for patch in patchList:
+                if patch['mutatedClass'] == dotClassName  \
+                        and patch['lineNumber'] == lineNum  \
+                        and patch['mutator'] == mutator  \
+                        and patch['description'] == description:
+                    foundCorrespondingPatch = True
+                    patch['isCorrect'] = True
+                    break
+            if not foundCorrespondingPatch:
+                warn('{}-{} data mismatch: correct patch {}@{}@{}@{} not found in timing data'.format(pid, bid, dotClassName, lineNum, mutator, description))
                 inconsistentProj.add('{}-{}'.format(pid, bid))
-                continue
-            if mutator not in plausibleMutatorList:
-                warn('{}-{} data mismatch: mutant {} is not plausible in timing data'.format(pid, bid, location + '@' + mutator))
-                inconsistentProj.add('{}-{}'.format(pid, bid))
-                continue
-            if isCorrect:
-                stmtInfoDict[location]['correctPatches'].append(mutator)
-    
-    # Assuming the patch correctness data is more reliable than the timing data, remove the plausible patches that are in timing data but not in correctness data.
-    for location in plausibleDict:
-        if location not in stmtInfoDict:
-            continue  # should already warn
-        for mutator in stmtInfoDict[location]['plausiblePatches']:
-            if mutator not in plausibleDict[location]:
-                stmtInfoDict[location]['plausiblePatches'].remove(mutator)
-            
+            else:
+                log('{}-{}: correct patch {}@{}@{}@{} successfully found'.format(pid, bid, dotClassName, lineNum, mutator, description))
     return stmtInfoDict
 
 def err(msg: str):
