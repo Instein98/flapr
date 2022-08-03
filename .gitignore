@@ -1,3 +1,5 @@
 Coverage
 tbar/patchesInfo/
 tbar/validationResult/
+*.log
+validationResult*
