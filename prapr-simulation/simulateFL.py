@@ -3,12 +3,32 @@ import sys
 import json
 import argparse
 from datetime import datetime
+from prettytable import PrettyTable
 
-from yaml import parse
+def readD4j120BuggyPos():
+    res = {}  # {bugId: list of locations}
+    with open(d4jBuggyPosFile, 'r') as file:
+        for line in file:
+            tmp = line.strip().split('@')
+            bugId = tmp[0].replace('_', '-')
+            location = tmp[1]
+            if '/org/' in location:
+                index = location.index('/org/') + 1
+            elif '/com/' in location:
+                index = location.index('/com/') + 1
+            dotClassName = location[index:-5].replace('/', '.')
+            lineNum = tmp[2]
+
+            if bugId not in res:
+                res[bugId] = []
+            res[bugId].append(dotClassName + ':' + lineNum)
+    return res
 
 patchesInfoDir = 'praprPatchesInfo'
 flSusListDir = '../sbfl/sbflResult/'
 simulateReportDir = 'simulateReport'
+d4jBuggyPosFile = 'd4j120fixPos.txt'
+d4jBuggyStmtDict = readD4j120BuggyPos()
 
 fls = ["Ample", "Anderberg", "Dice", "Dstar2", "ER1a", "ER1b", "ER5c", "Euclid", "Goodman", 
         "GP02", "GP03", "GP13", "GP19", "Hamann", "Hamming", "Jaccard", "Kulczynski1", 
@@ -32,7 +52,8 @@ def getProjHavingCorrectPatch():
                     res.append(pid + '-' + bid)
     return res
 
-def readSusList(susListPath: str):
+def readSusList(pid: str, bid: str, flName: str):
+    susListPath = os.path.join(flSusListDir, pid, bid, flName + '.csv')
     res = []
     firstLine = True
     with open(susListPath, 'r') as file:
@@ -45,7 +66,10 @@ def readSusList(susListPath: str):
                 res.append(location)
     return res
 
-def readPatchInfoDict(pid: str, bid: str):
+def readPatchInfoDict(pid: str, bid: str, CBeforeP=True):
+    """
+    If CBeforeP, correct patches are sorted before the plausible patches, otherwise sorted after.
+    """
     # read the patches information
     patchInfoPath = os.path.join(patchesInfoDir, pid, bid + '.json')
     if not os.path.isfile(patchInfoPath):
@@ -69,24 +93,23 @@ def readPatchInfoDict(pid: str, bid: str):
                 continue
         for patch in plausiblePatchList: 
             patchList.remove(patch)
-            patchList.insert(0, patch)
+            if CBeforeP:
+                patchList.insert(0, patch)
+            else:
+                patchList.append(patch)
         for patch in correctPatchList:
             patchList.remove(patch)
-            patchList.insert(0, patch)
+            if CBeforeP:
+                patchList.insert(0, patch)
+            else:
+                patchList.append(patch)
         patchesDict[location] = patchList
     return patchesDict
 
-def sortPatchesByFL(pid: str, bid: str, flName: str, patchesDict: dict):
+def sortPatchesByFL(susList: list, patchesDict: dict):
     res = []  # list of the patches generated using the FL order.
-
-    # read the suspicious list
-    susListPath = os.path.join(flSusListDir, pid, bid, flName + '.csv')
-    if not os.path.isfile(susListPath):
-        err('File not found: {}'.format(susListPath))
-        return None
-    susList = readSusList(susListPath)
     
-    ## secondly sort the locations according to the fl suspicious list
+    # sort the locations according to the fl suspicious list
     for location in susList:
         if location in patchesDict:
             res.extend(patchesDict[location])
@@ -119,32 +142,61 @@ def numOfPlausibleBeforeCorrect(simplifiedOrder):  # the argument is a list of 0
             res += 1
     return -1  # -1 means no correct patch is found
 
-def generateSummary(pid: str, bid: str):
+def firstBuggyStmtRankInSusList(pid: str, bid: str, susList: list):
+    bugId = pid + '-' + bid
+    if bugId not in d4jBuggyStmtDict:
+        err('The buggy position of {}-{} not found in {}'.format(pid, bid, d4jBuggyPosFile))
+        return None
+    buggyLocList = d4jBuggyStmtDict[bugId]
+    for i in range(len(susList)):
+        if susList[i] in buggyLocList:
+            return i + 1
+    return -1  # -1 means no buggy location found in the suspicious list
+
+def generateSummary(pid: str, bid: str, prettyTable=False):
     log('===== Processing {}-{} ====='.format(pid, bid))
-    text = 'FL, Plausible&Correct Distribution, #Plausible before Correct, Time before First Correct \n'
+    text = 'FL, Plausible&Correct Distribution, #Plausible before Correct, Time before First Correct, FirstBuggyRank\n'
     patchInfoDict = readPatchInfoDict(pid, bid)
     if patchInfoDict == None:
         err('Failed to read patches info for {}-{}, skipping'.format(pid, bid))
         return
     for fl in fls:
-        patchOrderedList = sortPatchesByFL(pid, bid, fl, patchInfoDict)
+        susList = readSusList(pid, bid, fl)
+        firstBuggyRank = firstBuggyStmtRankInSusList(pid, bid, susList)
+        patchOrderedList = sortPatchesByFL(susList, patchInfoDict)
         if patchOrderedList == None:
             err('Failed to sort patches according to the FL {0}, skipping {0}'.format(fl))
             continue
-        distribution = orderOfCorrectPlausible(patchOrderedList)
-        numPBeforeC = numOfPlausibleBeforeCorrect(distribution)
+        distributionList = orderOfCorrectPlausible(patchOrderedList)
+        numPBeforeC = numOfPlausibleBeforeCorrect(distributionList)
         timeForFirstC = timeToGenFirstCorrect(patchOrderedList)
-        text += '{}, {}, {}, {}\n'.format(fl, distribution, numPBeforeC, timeForFirstC)
+        distributionStr = str(distributionList)[1:-1].replace(', ', '-').replace('1', 'X').replace('0', 'O')
+        text += '{}, {}, {}, {}, {}\n'.format(fl, distributionStr, numPBeforeC, timeForFirstC, firstBuggyRank)
     os.makedirs(os.path.join(simulateReportDir, pid), exist_ok=True)
     with open(os.path.join(simulateReportDir, pid, bid + '.report'), 'w') as file:
+        if prettyTable:
+            text = csvToPrettyTable(text)
         file.write(text)
+
+def csvToPrettyTable(text: str):
+    table = None
+    firstLine = True
+    for line in text.split('\n'):
+        if firstLine:
+            table = PrettyTable(line.split(', '))
+            firstLine = False
+            continue
+        if ', ' in line:
+            # print(line.split(', '))
+            table.add_row(line.split(', '))
+    return table.get_string()
 
 def main():
     for projId in getProjHavingCorrectPatch():
         tmp = projId.split('-')
         pid = tmp[0]
         bid = tmp[1]
-        generateSummary(pid, bid)
+        generateSummary(pid, bid, prettyTable=True)
 
 def err(msg: str):
     print('[ERROR]({}) {}'.format(datetime.now().strftime('%Y/%m/%d %H:%M:%S'), msg))
