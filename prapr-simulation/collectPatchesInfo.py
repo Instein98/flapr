@@ -87,6 +87,7 @@ def readPatchCorrectnessInfo(pid: str, bid: str, stmtInfoDict: dict):
                         and patch['mutator'] == mutator  \
                         and patch['description'] == description:
                     foundCorrespondingPatch = True
+                    patch['isPlausible'] = True  # Found some patches not survive in timing data but marked as correct in correctness data
                     patch['isCorrect'] = True
                     break
             if not foundCorrespondingPatch:

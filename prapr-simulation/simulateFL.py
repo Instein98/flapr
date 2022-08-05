@@ -219,9 +219,22 @@ def firstBuggyStmtRankInSusList(pid: str, bid: str, susList: list):
             return susList[i][1]
     return -1  # -1 means no buggy location found in the suspicious list
 
+def getFirstPlausibleInducingStmtRank(patchOrderedList: list, susList: list, includeCorrect: bool):
+    for patch in patchOrderedList:
+        if patch['isPlausible'] == True or patch['isCorrect'] == True:
+            if (not includeCorrect) and patch['isCorrect'] == True:
+                continue
+            mutatedClass = patch['mutatedClass']
+            lineNumber = patch['lineNumber']
+            location = mutatedClass + ':' + lineNumber
+            for (loc, rank) in susList:
+                if location == loc:
+                    return rank
+    return -1  # -1 means no statement satisfying the requirement is found
+
 def generateSummary(pid: str, bid: str, prettyTable=False):
     log('===== Processing {}-{} ====='.format(pid, bid))
-    text = 'FL, P&C Distribution, #P before C, TimeToFind1stC, FirstBuggyRank\n'
+    text = 'FL, P&C Distribution, #P before C, TimeToFind1stC, 1stBuggyRank, 1stPorCRank, 1stPnoCRank\n'
     patchInfoDict = readPatchInfoDict(pid, bid)
     if patchInfoDict is None:
         err('Failed to read patches info for {}-{}, skipping'.format(pid, bid))
@@ -236,13 +249,13 @@ def generateSummary(pid: str, bid: str, prettyTable=False):
         if patchOrderedList is None:
             err('Failed to sort patches according to the FL {0}, skipping {0}'.format(fl))
             continue
-        # firstPlausibleNotCorrectRank =   # The rank of the first plausible-inducing stmt in susList (exclude correct)
-        # firstPlausibleOrCorrectRank =   # The rank of the first plausible-inducing stmt in susList (include correct)
+        firstPlausibleNotCorrectRank = getFirstPlausibleInducingStmtRank(patchOrderedList, susList, False)  # The rank of the first plausible-inducing stmt in susList (exclude correct)
+        firstPlausibleOrCorrectRank = getFirstPlausibleInducingStmtRank(patchOrderedList, susList, True)  # The rank of the first plausible-inducing stmt in susList (include correct)
         distributionList = orderOfCorrectPlausible(patchOrderedList)
         numPBeforeC = numOfPlausibleBeforeCorrect(distributionList)
         timeForFirstC = timeToGenFirstCorrect(patchOrderedList)
         distributionStr = str(distributionList)[1:-1].replace(', ', '-').replace('1', 'X').replace('0', 'O')
-        text += '{}, {}, {}, {}, {}\n'.format(fl, distributionStr, numPBeforeC, timeForFirstC, firstBuggyRank)
+        text += '{}, {}, {}, {}, {}, {}, {}\n'.format(fl, distributionStr, numPBeforeC, timeForFirstC, firstBuggyRank, firstPlausibleOrCorrectRank, firstPlausibleNotCorrectRank)
     os.makedirs(os.path.join(simulateReportDir, pid), exist_ok=True)
     with open(os.path.join(simulateReportDir, pid, bid + '.report'), 'w') as file:
         if prettyTable:
