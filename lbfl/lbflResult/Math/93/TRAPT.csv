@@ -1,0 +1,14 @@
+CodeElement, SuspiciousScore
+org.apache.commons.math.util.MathUtils#factorialDouble(int):374, 2.334263502691896
+org.apache.commons.math.util.MathUtils#factorialDouble(int):377, 2.334263502691896
+org.apache.commons.math.util.MathUtils#factorialDouble(int):375, 2.32849
+org.apache.commons.math.util.MathUtils#factorialLog(int):394, 2.334263502691896
+org.apache.commons.math.util.MathUtils#factorialLog(int):397, 2.334263502691896
+org.apache.commons.math.util.MathUtils#factorialLog(int):398, 2.334263502691896
+org.apache.commons.math.util.MathUtils#factorialLog(int):399, 2.334263502691896
+org.apache.commons.math.util.MathUtils#factorialLog(int):401, 2.334263502691896
+org.apache.commons.math.util.MathUtils#factorialLog(int):395, 2.32849
+org.apache.commons.math.util.MathUtils#factorial(int):350, 2.30686
+org.apache.commons.math.util.MathUtils#factorial(int):345, 2.3039310678118654
+org.apache.commons.math.util.MathUtils#factorial(int):346, 2.3039310678118654
+org.apache.commons.math.util.MathUtils#factorial(int):347, 2.29686

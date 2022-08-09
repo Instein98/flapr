@@ -1,0 +1,16 @@
+CodeElement, SuspiciousScore
+org.apache.commons.math3.genetics.ListPopulation#addChromosomes(java.util.Collection):112, 11.350171067811866
+org.apache.commons.math3.genetics.ListPopulation#addChromosomes(java.util.Collection):113, 11.350171067811866
+org.apache.commons.math3.genetics.ListPopulation#addChromosomes(java.util.Collection):108, 11.348873502691896
+org.apache.commons.math3.genetics.ListPopulation#addChromosomes(java.util.Collection):109, 11.3431
+org.apache.commons.math3.genetics.ListPopulation#iterator():209, 11.323271067811866
+org.apache.commons.math3.genetics.BinaryChromosome#randomBinaryRepresentation(int):73, 10.263815113445776
+org.apache.commons.math3.genetics.BinaryChromosome#randomBinaryRepresentation(int):74, 10.263815113445776
+org.apache.commons.math3.genetics.BinaryChromosome#randomBinaryRepresentation(int):75, 10.263815113445776
+org.apache.commons.math3.genetics.BinaryChromosome#randomBinaryRepresentation(int):77, 10.263815113445776
+org.apache.commons.math3.genetics.BinaryChromosome#checkValidity(java.util.List):64, 10.209173500981127
+org.apache.commons.math3.genetics.BinaryChromosome#checkValidity(java.util.List):58, 10.209072612419124
+org.apache.commons.math3.genetics.BinaryChromosome#checkValidity(java.util.List):59, 10.209072612419124
+org.apache.commons.math3.genetics.BinaryChromosome#checkValidity(java.util.List):63, 10.209072612419124
+org.apache.commons.math3.genetics.BinaryChromosome#checkValidity(java.util.List):60, 10.2064
+org.apache.commons.math3.genetics.GeneticAlgorithm#getRandomGenerator():104, 9.6342

@@ -1,0 +1,7 @@
+CodeElement, SuspiciousScore
+org.apache.commons.lang.LocaleUtils#isAvailableLocale(java.util.Locale):223, 4.084919999999999
+org.apache.commons.lang.LocaleUtils#<clinit>():47, 1.26877
+org.apache.commons.lang.LocaleUtils#<clinit>():49, 1.26877
+org.apache.commons.lang.LocaleUtils#<clinit>():51, 1.26877
+org.apache.commons.lang.LocaleUtils#<clinit>():52, 1.26877
+org.apache.commons.lang.LocaleUtils#<clinit>():53, 1.26877

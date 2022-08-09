@@ -1,0 +1,15 @@
+CodeElement, SuspiciousScore
+org.apache.commons.lang3.ArrayUtils#add(java.lang.Object[],java.lang.Object):3292, 1.96438
+org.apache.commons.lang3.ArrayUtils#add(java.lang.Object[],java.lang.Object):3295, 1.96438
+org.apache.commons.lang3.ArrayUtils#add(java.lang.Object[],java.lang.Object):3290, 1.9601535026918964
+org.apache.commons.lang3.ArrayUtils#add(java.lang.Object[],java.lang.Object):3298, 1.9601535026918964
+org.apache.commons.lang3.ArrayUtils#add(java.lang.Object[],java.lang.Object):3299, 1.9601535026918964
+org.apache.commons.lang3.ArrayUtils#add(java.lang.Object[],java.lang.Object):3300, 1.9601535026918964
+org.apache.commons.lang3.ArrayUtils#add(java.lang.Object[],java.lang.Object):3291, 1.95438
+org.apache.commons.lang3.ArrayUtils#add(java.lang.Object[],java.lang.Object):3293, 1.95438
+org.apache.commons.lang3.ArrayUtils#copyArrayGrow1(java.lang.Object,java.lang.Class):3535, 1.1318333333333335
+org.apache.commons.lang3.ArrayUtils#copyArrayGrow1(java.lang.Object,java.lang.Class):3529, 1.1315151134457777
+org.apache.commons.lang3.ArrayUtils#copyArrayGrow1(java.lang.Object,java.lang.Class):3530, 1.1285
+org.apache.commons.lang3.ArrayUtils#copyArrayGrow1(java.lang.Object,java.lang.Class):3531, 1.1285
+org.apache.commons.lang3.ArrayUtils#copyArrayGrow1(java.lang.Object,java.lang.Class):3532, 1.1285
+org.apache.commons.lang3.ArrayUtils#copyArrayGrow1(java.lang.Object,java.lang.Class):3533, 1.1285

@@ -1,0 +1,4 @@
+CodeElement, SuspiciousScore
+org.apache.commons.lang3.time.DateUtils#isSameLocalTime(java.util.Calendar,java.util.Calendar):259, 2.6980299999999997
+org.apache.commons.lang3.time.DateUtils#isSameLocalTime(java.util.Calendar,java.util.Calendar):262, 2.6980299999999997
+org.apache.commons.lang3.time.DateUtils#isSameLocalTime(java.util.Calendar,java.util.Calendar):260, 2.68803

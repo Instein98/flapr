@@ -1,0 +1,9 @@
+CodeElement, SuspiciousScore
+org.joda.time.field.FieldUtils#safeMultiply(long,int):140, 13.0453
+org.joda.time.field.FieldUtils#safeMultiply(long,int):138, 13.038073500981126
+org.joda.time.field.FieldUtils#safeMultiply(long,int):142, 13.037261161351381
+org.joda.time.field.FieldUtils#safeMultiply(long,int):144, 13.037224500897299
+org.joda.time.field.FieldUtils#safeMultiply(long,int):145, 13.037224500897299
+org.joda.time.field.FieldUtils#safeMultiply(long,int):148, 13.037224500897299
+org.joda.time.field.FieldUtils#safeMultiply(long,int):136, 13.036686750490562
+org.joda.time.field.FieldUtils#safeMultiply(long,int):146, 13.0353

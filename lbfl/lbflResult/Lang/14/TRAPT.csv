@@ -1,0 +1,6 @@
+CodeElement, SuspiciousScore
+org.apache.commons.lang3.StringUtils#equals(java.lang.CharSequence,java.lang.CharSequence):782, 2.366235356250363
+org.apache.commons.lang3.StringUtils#equals(java.lang.CharSequence,java.lang.CharSequence):783, 2.366235356250363
+org.apache.commons.lang3.StringUtils#equals(java.lang.CharSequence,java.lang.CharSequence):785, 2.366235356250363
+org.apache.commons.lang3.StringUtils#equals(java.lang.CharSequence,java.lang.CharSequence):788, 2.366235356250363
+org.apache.commons.lang3.StringUtils#equals(java.lang.CharSequence,java.lang.CharSequence):786, 2.36381

@@ -1,0 +1,13 @@
+CodeElement, SuspiciousScore
+com.google.javascript.jscomp.ProcessCommonJSModules#normalizeSourceName(java.lang.String):121, 6.822909999999999
+com.google.javascript.jscomp.ProcessCommonJSModules#normalizeSourceName(java.lang.String):120, 6.816072277660168
+com.google.javascript.jscomp.ProcessCommonJSModules#normalizeSourceName(java.lang.String):124, 6.816072277660168
+com.google.javascript.jscomp.ProcessCommonJSModules#guessCJSModuleName(java.lang.String):72, 6.532222277660169
+com.google.javascript.jscomp.ProcessCommonJSModules#toModuleName(java.lang.String):89, 5.444092277660168
+com.google.javascript.jscomp.SourceFile.Builder#buildFromCode(java.lang.String,java.lang.String):391, 3.4642238063795605
+com.google.javascript.jscomp.SourceFile#fromCode(java.lang.String,java.lang.String):323, 3.4640038063795604
+com.google.javascript.jscomp.SourceFile#builder():355, 3.4429938063795604
+com.google.javascript.jscomp.SourceFile#setCode(java.lang.String):148, 3.3115238063795602
+com.google.javascript.jscomp.SourceFile#setCode(java.lang.String):149, 3.3115238063795602
+com.google.javascript.jscomp.SourceFile#setOriginalPath(java.lang.String):156, 3.3115238063795602
+com.google.javascript.jscomp.SourceFile#setOriginalPath(java.lang.String):157, 3.3115238063795602

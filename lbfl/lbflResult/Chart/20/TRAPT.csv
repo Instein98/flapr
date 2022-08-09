@@ -1,0 +1,5 @@
+CodeElement, SuspiciousScore
+org.jfree.chart.plot.Marker#getOutlinePaint():265, 3.7581021359549993
+org.jfree.chart.plot.Marker#getPaint():211, 3.3114457418583503
+org.jfree.chart.plot.ValueMarker#getValue():107, 3.305376053020268
+org.jfree.chart.plot.Marker#getStroke():238, 3.1340045008972988

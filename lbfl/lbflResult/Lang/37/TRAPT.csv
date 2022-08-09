@@ -1,0 +1,10 @@
+CodeElement, SuspiciousScore
+org.apache.commons.lang3.ArrayUtils#addAll(java.lang.Object[],java.lang.Object[]):2954, 2.09787
+org.apache.commons.lang3.ArrayUtils#addAll(java.lang.Object[],java.lang.Object[]):2956, 2.09787
+org.apache.commons.lang3.ArrayUtils#addAll(java.lang.Object[],java.lang.Object[]):2959, 2.09787
+org.apache.commons.lang3.ArrayUtils#addAll(java.lang.Object[],java.lang.Object[]):2960, 2.09787
+org.apache.commons.lang3.ArrayUtils#addAll(java.lang.Object[],java.lang.Object[]):2961, 2.09787
+org.apache.commons.lang3.ArrayUtils#addAll(java.lang.Object[],java.lang.Object[]):2962, 2.09787
+org.apache.commons.lang3.ArrayUtils#addAll(java.lang.Object[],java.lang.Object[]):2964, 2.09787
+org.apache.commons.lang3.ArrayUtils#addAll(java.lang.Object[],java.lang.Object[]):2955, 2.09287
+org.apache.commons.lang3.ArrayUtils#addAll(java.lang.Object[],java.lang.Object[]):2957, 2.09287

@@ -1,0 +1,8 @@
+CodeElement, SuspiciousScore
+org.apache.commons.math.util.MathUtils#checkNotNull(java.lang.Object,org.apache.commons.math.exception.util.Localizable,java.lang.Object[]):247, 10.193422214211308
+org.apache.commons.math.util.MathUtils#checkNotNull(java.lang.Object,org.apache.commons.math.exception.util.Localizable,java.lang.Object[]):244, 10.193411645928052
+org.apache.commons.math.util.MathUtils#checkNotNull(java.lang.Object,org.apache.commons.math.exception.util.Localizable,java.lang.Object[]):245, 10.1918
+org.apache.commons.math.fraction.BigFraction#floatValue():732, 10.0484
+org.apache.commons.math.fraction.BigFraction#floatValue():735, 10.0484
+org.apache.commons.math.fraction.BigFraction#doubleValue():685, 9.252272277034145
+org.apache.commons.math.fraction.BigFraction#doubleValue():688, 9.252272277034145

@@ -1,0 +1,10 @@
+CodeElement, SuspiciousScore
+org.apache.commons.math.util.MathUtils#equals(double,double):417, 8.06062
+org.apache.commons.math.util.MathUtils#equals(double[],double[]):523, 8.06062
+org.apache.commons.math.util.MathUtils#equals(double[],double[]):524, 8.06062
+org.apache.commons.math.util.MathUtils#equals(double[],double[]):526, 8.06062
+org.apache.commons.math.util.MathUtils#equals(double[],double[]):527, 8.06062
+org.apache.commons.math.util.MathUtils#equals(double[],double[]):529, 8.06062
+org.apache.commons.math.util.MathUtils#equals(double[],double[]):530, 8.06062
+org.apache.commons.math.util.MathUtils#equals(double[],double[]):534, 8.06062
+org.apache.commons.math.util.MathUtils#equals(double[],double[]):531, 8.05062

@@ -1,0 +1,9 @@
+CodeElement, SuspiciousScore
+org.apache.commons.math.distribution.NormalDistributionImpl#setStandardDeviationInternal(double):141, 2.7612157418583503
+org.apache.commons.math.distribution.NormalDistributionImpl#setStandardDeviationInternal(double):146, 2.7612157418583503
+org.apache.commons.math.distribution.NormalDistributionImpl#setStandardDeviationInternal(double):147, 2.7612157418583503
+org.apache.commons.math.distribution.NormalDistributionImpl#setStandardDeviationInternal(double):142, 2.75939
+org.apache.commons.math.distribution.NormalDistributionImpl#setMeanInternal(double):114, 2.1244557418583505
+org.apache.commons.math.distribution.NormalDistributionImpl#setMeanInternal(double):115, 2.1244557418583505
+org.apache.commons.math.MathRuntimeException#createIllegalArgumentException(org.apache.commons.math.exception.util.Localizable,java.lang.Object[]):387, 1.3433712493166612
+org.apache.commons.math.util.FastMath#sqrt(double):219, -0.16044492092766294

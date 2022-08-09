@@ -1,0 +1,12 @@
+CodeElement, SuspiciousScore
+org.apache.commons.math.stat.Frequency#addValue(java.lang.Object):132, 7.8473910678118655
+org.apache.commons.math.stat.Frequency#addValue(java.lang.Object):134, 7.8473910678118655
+org.apache.commons.math.stat.Frequency#addValue(java.lang.Object):121, 7.842209822365047
+org.apache.commons.math.stat.Frequency#addValue(java.lang.Object):122, 7.842209822365047
+org.apache.commons.math.stat.Frequency#addValue(java.lang.Object):126, 7.842209822365047
+org.apache.commons.math.stat.Frequency#addValue(java.lang.Object):123, 7.84032
+org.apache.commons.math.stat.Frequency#addValue(java.lang.Object):127, 7.84032
+org.apache.commons.math.stat.Frequency#addValue(java.lang.Object):128, 7.84032
+org.apache.commons.math.stat.Frequency#addValue(java.lang.Object):130, 7.84032
+org.apache.commons.math.stat.Frequency#addValue(java.lang.Object):135, 7.84032
+org.apache.commons.math.stat.Frequency#addValue(java.lang.Object):136, 7.84032

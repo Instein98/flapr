@@ -1,0 +1,10 @@
+CodeElement, SuspiciousScore
+org.apache.commons.math.complex.Complex#add(org.apache.commons.math.complex.Complex):152, 5.0404260679775
+org.apache.commons.math.complex.Complex#add(org.apache.commons.math.complex.Complex):153, 5.0404260679775
+org.apache.commons.math.complex.Complex#isNaN():319, 4.949401241452319
+org.apache.commons.math.complex.Complex#getReal():308, 3.8038053292781644
+org.apache.commons.math.complex.Complex#getImaginary():299, 3.800480580675691
+org.apache.commons.math.complex.Complex#createComplex(double,double):997, 3.8002252286093343
+org.apache.commons.math.util.MathUtils#checkNotNull(java.lang.Object):2334, 3.2088008348173336
+org.apache.commons.math.util.MathUtils#checkNotNull(java.lang.Object):2331, 3.208798561304016
+org.apache.commons.math.util.MathUtils#checkNotNull(java.lang.Object):2332, 3.20835

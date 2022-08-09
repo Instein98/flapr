@@ -1,0 +1,5 @@
+CodeElement, SuspiciousScore
+org.apache.commons.math.geometry.Vector3D#crossProduct(org.apache.commons.math.geometry.Vector3D,org.apache.commons.math.geometry.Vector3D):473, 9.86692
+org.apache.commons.math.geometry.Vector3D#getX():181, 8.735831138830084
+org.apache.commons.math.geometry.Vector3D#getY():189, 8.735831138830084
+org.apache.commons.math.geometry.Vector3D#getZ():197, 8.735831138830084

@@ -1,0 +1,7 @@
+CodeElement, SuspiciousScore
+org.apache.commons.lang.StringUtils#containsIgnoreCase(java.lang.String,java.lang.String):1045, 1.1836410678118654
+org.apache.commons.lang.StringUtils#containsIgnoreCase(java.lang.String,java.lang.String):1048, 1.1836410678118654
+org.apache.commons.lang.StringUtils#containsIgnoreCase(java.lang.String,java.lang.String):1046, 1.17657
+org.apache.commons.lang.StringUtils#contains(java.lang.String,java.lang.String):1018, 1.0477835026918965
+org.apache.commons.lang.StringUtils#contains(java.lang.String,java.lang.String):1015, 1.04701
+org.apache.commons.lang.StringUtils#contains(java.lang.String,java.lang.String):1016, 1.04201

@@ -1,0 +1,9 @@
+CodeElement, SuspiciousScore
+org.apache.commons.lang3.ClassUtils#toClass(java.lang.Object[]):903, 3.29506
+org.apache.commons.lang3.ClassUtils#toClass(java.lang.Object[]):904, 3.29506
+org.apache.commons.lang3.ClassUtils#toClass(java.lang.Object[]):905, 3.29506
+org.apache.commons.lang3.ClassUtils#toClass(java.lang.Object[]):906, 3.29506
+org.apache.commons.lang3.ClassUtils#toClass(java.lang.Object[]):908, 3.29506
+org.apache.commons.lang3.ClassUtils#toClass(java.lang.Object[]):909, 3.29506
+org.apache.commons.lang3.ClassUtils#toClass(java.lang.Object[]):910, 3.29506
+org.apache.commons.lang3.ClassUtils#toClass(java.lang.Object[]):912, 3.29506

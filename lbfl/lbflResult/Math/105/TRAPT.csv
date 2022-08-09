@@ -1,0 +1,16 @@
+CodeElement, SuspiciousScore
+org.apache.commons.math.stat.regression.SimpleRegression#addData(double,double):106, 2.505063333333333
+org.apache.commons.math.stat.regression.SimpleRegression#addData(double,double):107, 2.505063333333333
+org.apache.commons.math.stat.regression.SimpleRegression#addData(double,double):108, 2.505063333333333
+org.apache.commons.math.stat.regression.SimpleRegression#addData(double,double):110, 2.505063333333333
+org.apache.commons.math.stat.regression.SimpleRegression#addData(double,double):111, 2.505063333333333
+org.apache.commons.math.stat.regression.SimpleRegression#addData(double,double):112, 2.505063333333333
+org.apache.commons.math.stat.regression.SimpleRegression#addData(double,double):113, 2.505063333333333
+org.apache.commons.math.stat.regression.SimpleRegression#addData(double,double):114, 2.505063333333333
+org.apache.commons.math.stat.regression.SimpleRegression#addData(double,double):115, 2.505063333333333
+org.apache.commons.math.stat.regression.SimpleRegression#addData(double,double):116, 2.505063333333333
+org.apache.commons.math.stat.regression.SimpleRegression#addData(double,double):118, 2.505063333333333
+org.apache.commons.math.stat.regression.SimpleRegression#addData(double,double):119, 2.505063333333333
+org.apache.commons.math.stat.regression.SimpleRegression#addData(double,double):120, 2.505063333333333
+org.apache.commons.math.stat.regression.SimpleRegression#addData(double,double):121, 2.505063333333333
+org.apache.commons.math.stat.regression.SimpleRegression#getSumSquaredErrors():264, 2.4714733333333334

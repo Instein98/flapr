@@ -1,0 +1,11 @@
+CodeElement, SuspiciousScore
+org.apache.commons.lang3.text.translate.LookupTranslator#translate(java.lang.CharSequence,int,java.io.Writer):76, 3.2278499999999997
+org.apache.commons.lang3.text.translate.LookupTranslator#translate(java.lang.CharSequence,int,java.io.Writer):77, 3.2278499999999997
+org.apache.commons.lang3.text.translate.LookupTranslator#translate(java.lang.CharSequence,int,java.io.Writer):78, 3.2278499999999997
+org.apache.commons.lang3.text.translate.LookupTranslator#translate(java.lang.CharSequence,int,java.io.Writer):83, 3.2278499999999997
+org.apache.commons.lang3.text.translate.LookupTranslator#translate(java.lang.CharSequence,int,java.io.Writer):70, 3.2278111613513816
+org.apache.commons.lang3.text.translate.LookupTranslator#translate(java.lang.CharSequence,int,java.io.Writer):71, 3.2278111613513816
+org.apache.commons.lang3.text.translate.LookupTranslator#translate(java.lang.CharSequence,int,java.io.Writer):75, 3.2278111613513816
+org.apache.commons.lang3.text.translate.LookupTranslator#translate(java.lang.CharSequence,int,java.io.Writer):72, 3.22585
+org.apache.commons.lang3.text.translate.LookupTranslator#translate(java.lang.CharSequence,int,java.io.Writer):79, 3.22585
+org.apache.commons.lang3.text.translate.LookupTranslator#translate(java.lang.CharSequence,int,java.io.Writer):80, 3.22585
