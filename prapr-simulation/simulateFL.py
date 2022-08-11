@@ -27,6 +27,7 @@ def readD4j120BuggyPos():
 
 patchesInfoDir = 'praprPatchesInfo'
 flSusListDir = '../sbfl/sbflResult/'
+gzoltarFLSusListDir = '/home/yicheng/research/flapr/d4jOchiai/results/'
 simulateReportDir = 'simulateReport'
 d4jBuggyPosFile = 'd4j120fixPos.txt'
 d4jBuggyStmtDict = readD4j120BuggyPos()
@@ -53,8 +54,32 @@ def getProjHavingCorrectPatch():
                     res.append(pid + '-' + bid)
     return res
 
-def readSusList(pid: str, bid: str, flName: str):
-    susListPath = os.path.join(flSusListDir, pid, bid, flName + '.csv')
+def translateGzoltarLocation(loc: str):
+    """
+    org.apache.commons.lang3.math$NumberUtils#createNumber(java.lang.String):570 ->
+    org.apache.commons.lang3.math.NumberUtils:570
+    """
+    tmp = loc.split(':')
+    lineNumber = tmp[1]
+    className = tmp[0]
+    # only change the first $ to .
+    className = className[:className.index('#')].replace('$', '.', 1)
+    return className + ':' + lineNumber
+
+def readSusList(pid: str, bid: str, flName: str, isGzoltar=False):
+    if isGzoltar:
+        flName = flName.lower()
+        if flName == 'dstar2':
+            flName = 'dstar'
+        elif flName == 'rensendice':
+            flName = 'sorensendice'
+        elif flName == 'russellrao':
+            flName = 'russelrao'
+        susListPath = os.path.join(gzoltarFLSusListDir, pid, bid, flName + '.ranking.csv')
+        delimiter = ';'
+    else:
+        susListPath = os.path.join(flSusListDir, pid, bid, flName + '.csv')
+        delimiter = ', '
     if not os.path.isfile(susListPath):
         err('File not found: {}'.format(susListPath))
         return None
@@ -65,9 +90,11 @@ def readSusList(pid: str, bid: str, flName: str):
             if firstLine:
                 firstLine = False
                 continue
-            if ', ' in line:
-                tmp = line.strip().split(', ')
+            if delimiter in line:
+                tmp = line.strip().split(delimiter)
                 location = tmp[0]
+                if isGzoltar:
+                    location = translateGzoltarLocation(location)
                 score = float(tmp[1])
                 res.append([location, score, len(res)+1])
     
@@ -232,7 +259,7 @@ def getFirstPlausibleInducingStmtRank(patchOrderedList: list, susList: list, inc
                     return rank
     return -1  # -1 means no statement satisfying the requirement is found
 
-def generateSummary(pid: str, bid: str, prettyTable=False):
+def generateSummary(pid: str, bid: str, prettyTable=False, isGzoltar=False):
     log('===== Processing {}-{} ====='.format(pid, bid))
     text = 'FL, P&C Distribution, #P before C, TimeToFind1stC, 1stBuggyRank, 1stPorCRank, 1stPnoCRank\n'
     patchInfoDict = readPatchInfoDict(pid, bid)
@@ -240,7 +267,7 @@ def generateSummary(pid: str, bid: str, prettyTable=False):
         err('Failed to read patches info for {}-{}, skipping'.format(pid, bid))
         return
     for fl in fls:
-        susList = readSusList(pid, bid, fl)  # list of (location, rank)
+        susList = readSusList(pid, bid, fl, isGzoltar)  # list of (location, rank)
         if susList is None:
             err('Failed to read the suspicious list of FL {2} for {0}-{1}, skipping {2}'.format(pid, bid, fl))
             continue
@@ -280,7 +307,7 @@ def main():
         tmp = projId.split('-')
         pid = tmp[0]
         bid = tmp[1]
-        generateSummary(pid, bid, prettyTable=True)
+        generateSummary(pid, bid, prettyTable=True, isGzoltar=True)
 
 def err(msg: str):
     print('[ERROR]({}) {}'.format(datetime.now().strftime('%Y/%m/%d %H:%M:%S'), msg))

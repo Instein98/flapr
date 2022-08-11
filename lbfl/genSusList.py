@@ -8,7 +8,7 @@ ochiaiResultDir = '/home/yicheng/research/flapr/d4jOchiai/results/'
 outputDir = 'lbflResult'
 
 pidList = ['Chart', 'Lang', 'Math', 'Time', 'Closure', 'Mockito']
-flNameList = ['FLUCSS', 'Grace', 'TRAPT', 'Metallaxis', 'MUSE', 'PageRank', 'ProFL']
+flNameList = ['FLUCSS', 'TRAPT', 'Metallaxis', 'MUSE', 'PageRank']  # Grace, ProFL have different format
 
 def readMethodInfo():
     methodInfoDict = {}
@@ -47,18 +47,28 @@ def genMethodLevelSusList(flName: str, methodInfoDict: list):
             if not file.endswith('.csv'):
                 continue
             filePath = os.path.join(pidPath, file)
-            m = re.match(r'.*-(\d+)-.*', file)
+            if flName == 'PageRank':
+                if '-pk-' not in file:
+                    continue
+                pattern = r'.*?(\d+)-pk-.*'
+            else:
+                pattern = r'.*?(\d+)-.*'
+            m = re.match(pattern, file)
             if m is None:
-                err("File name {} does not match pattern {}".format(file, "'.*-(\d+)-.*'"))
+                err("File name {} does not match pattern {}".format(file, pattern))
                 return None
             bid = m[1]
-            
+            print('---- {}-{} ----'.format(pid, bid))
             # read csv file
             key = pid + '-' + bid
             scoreList = []
             with open(filePath, 'r') as f:
                 idx = 0
                 for line in f:
+                    try:
+                        float(line.strip())
+                    except:
+                        continue
                     scoreList.append((methodInfoDict[key][idx], float(line.strip())))
                     idx += 1
             scoreList = sorted(scoreList, key=lambda x: x[1], reverse=True)
@@ -181,6 +191,7 @@ def outputStmtLevelSusList(stmtSusDict: dict, flName: str):
                 file.write('{}, {}\n'.format(codeElement, score))
 
 def generateStmtlevelSusListForLBFL(methodInfoDict:dict, ochiaiSusDict: dict, flName: str):
+    print('===== Start {} ====='.format(flName))
     methodSusListDict = genMethodLevelSusList(flName, methodInfoDict)
     stmtSusDict = genStmtLevelSusList(methodSusListDict, ochiaiSusDict)
     outputStmtLevelSusList(stmtSusDict, flName)
@@ -197,7 +208,9 @@ def log(msg: str):
 if __name__ == '__main__':
     methodInfoDict = readMethodInfo()
     ochiaiDict = readOchiaiRanking()
-    generateStmtlevelSusListForLBFL(methodInfoDict, ochiaiDict, 'TRAPT')
+    # generateStmtlevelSusListForLBFL(methodInfoDict, ochiaiDict, 'TRAPT')
+    for fl in flNameList:
+        generateStmtlevelSusListForLBFL(methodInfoDict, ochiaiDict, fl)
     # # print(methodInfoDict)
     # with open('tmp2', 'w') as file:
     #     json.dump(stmtSusDict, file, indent=2)
