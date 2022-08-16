@@ -1,8 +1,6 @@
 import os
-import sys
 import math
 import json
-import argparse
 from datetime import datetime
 from prettytable import PrettyTable
 
@@ -27,16 +25,18 @@ def readD4j120BuggyPos():
 
 patchesInfoDir = 'praprPatchesInfo'
 flSusListDir = '../sbfl/sbflResult/'
+lbflSusListDir = '../lbfl/lbflResult/'
 gzoltarFLSusListDir = '/home/yicheng/research/flapr/d4jOchiai/results/'
 simulateReportDir = 'simulateReport'
 d4jBuggyPosFile = 'd4j120fixPos.txt'
 d4jBuggyStmtDict = readD4j120BuggyPos()
 
-fls = ["Ample", "Anderberg", "Dice", "Dstar2", "ER1a", "ER1b", "ER5c", "Euclid", "Goodman", 
+sbfls = ["Ample", "Anderberg", "Dice", "Dstar2", "ER1a", "ER1b", "ER5c", "Euclid", "Goodman", 
         "GP02", "GP03", "GP13", "GP19", "Hamann", "Hamming", "Jaccard", "Kulczynski1", 
         "Kulczynski2", "M1", "M2", "Ochiai", "Ochiai2", "Overlap", "rensenDice", 
         "RogersTanimoto", "RussellRao", "SBI", "SimpleMatching", "Sokal", "Tarantula", 
         "Wong1", "Wong2", "Wong3", "Zoltar"]
+lbfls = ['FLUCSS', 'TRAPT', 'Metallaxis', 'MUSE', 'PageRank', 'Grace', 'ProFL']
 
 def getProjHavingCorrectPatch():
     res = []
@@ -66,7 +66,7 @@ def translateGzoltarLocation(loc: str):
     className = className[:className.index('#')].replace('$', '.', 1)
     return className + ':' + lineNumber
 
-def readSusList(pid: str, bid: str, flName: str, isGzoltar=False):
+def readSusList(pid: str, bid: str, flName: str, lbfl=False, isGzoltar=False):
     if isGzoltar:
         flName = flName.lower()
         if flName == 'dstar2':
@@ -78,7 +78,10 @@ def readSusList(pid: str, bid: str, flName: str, isGzoltar=False):
         susListPath = os.path.join(gzoltarFLSusListDir, pid, bid, flName + '.ranking.csv')
         delimiter = ';'
     else:
-        susListPath = os.path.join(flSusListDir, pid, bid, flName + '.csv')
+        if lbfl:
+            susListPath = os.path.join(lbflSusListDir, pid, bid, flName + '.csv')
+        else:
+            susListPath = os.path.join(flSusListDir, pid, bid, flName + '.csv')
         delimiter = ', '
     if not os.path.isfile(susListPath):
         err('File not found: {}'.format(susListPath))
@@ -261,13 +264,17 @@ def getFirstPlausibleInducingStmtRank(patchOrderedList: list, susList: list, inc
 
 def generateSummary(pid: str, bid: str, prettyTable=False, isGzoltar=False):
     log('===== Processing {}-{} ====='.format(pid, bid))
-    text = 'FL, P&C Distribution, #P before C, TimeToFind1stC, 1stBuggyRank, 1stPorCRank, 1stPnoCRank\n'
+    # text = 'FL, P&C Distribution, #P before C, TimeToFind1stC, 1stBuggyRank, 1stPorCRank, 1stPnoCRank\n'
+    text = 'FL, #P before C, TimeToFind1stC, 1stBuggyRank, 1stPorCRank, 1stPnoCRank\n'
     patchInfoDict = readPatchInfoDict(pid, bid)
     if patchInfoDict is None:
         err('Failed to read patches info for {}-{}, skipping'.format(pid, bid))
         return
-    for fl in fls:
-        susList = readSusList(pid, bid, fl, isGzoltar)  # list of (location, rank)
+    for fl in sbfls + lbfls:
+        if fl in sbfls:
+            susList = readSusList(pid, bid, fl, isGzoltar=True)  # list of (location, rank)
+        elif fl in lbfls:
+            susList = readSusList(pid, bid, fl, lbfl=True)  # list of (location, rank)
         if susList is None:
             err('Failed to read the suspicious list of FL {2} for {0}-{1}, skipping {2}'.format(pid, bid, fl))
             continue
@@ -281,8 +288,9 @@ def generateSummary(pid: str, bid: str, prettyTable=False, isGzoltar=False):
         distributionList = orderOfCorrectPlausible(patchOrderedList)
         numPBeforeC = numOfPlausibleBeforeCorrect(distributionList)
         timeForFirstC = timeToGenFirstCorrect(patchOrderedList)
-        distributionStr = str(distributionList)[1:-1].replace(', ', '-').replace('1', 'X').replace('0', 'O')
-        text += '{}, {}, {}, {}, {}, {}, {}\n'.format(fl, distributionStr, numPBeforeC, timeForFirstC, firstBuggyRank, firstPlausibleOrCorrectRank, firstPlausibleNotCorrectRank)
+        # distributionStr = str(distributionList)[1:-1].replace(', ', '').replace('1', 'X').replace('0', 'O')
+        # text += '{}, {}, {}, {}, {}, {}, {}\n'.format(fl, distributionStr, numPBeforeC, timeForFirstC, firstBuggyRank, firstPlausibleOrCorrectRank, firstPlausibleNotCorrectRank)
+        text += '{}, {}, {}, {}, {}, {}\n'.format(fl, numPBeforeC, timeForFirstC, firstBuggyRank, firstPlausibleOrCorrectRank, firstPlausibleNotCorrectRank)
     os.makedirs(os.path.join(simulateReportDir, pid), exist_ok=True)
     with open(os.path.join(simulateReportDir, pid, bid + '.report'), 'w') as file:
         if prettyTable:
